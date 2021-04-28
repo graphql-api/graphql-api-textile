@@ -1,4 +1,11 @@
 {
   "name": "@graphql-api/textile",
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "dependencies": {
+    "@textile/hub": "^6.1.2",
+    "busboy": "0.3.1"
+  },
+  "devDependencies": {
+    "@types/busboy": "^0.2.3"
+  }
 }
