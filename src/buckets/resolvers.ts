@@ -1,9 +1,8 @@
-import { IResolvers } from 'apollo-server-micro'
-import { ApolloError } from 'apollo-server-core'
-import { GraphQLUpload } from 'graphql-upload'
 import { GraphQLResolverMap } from 'apollo-graphql'
+import { ApolloError } from 'apollo-server-core'
 import { TextileDataSource } from '../dataSource'
 import { DateTimeResolver } from 'graphql-scalars'
+import GraphQLUpload from 'graphql-upload/public/GraphQLUpload.js'
 
 const formatDate = (value: number) => new Date(Number(String(value).slice(0, 13)))
 
@@ -11,6 +10,17 @@ export const resolvers: GraphQLResolverMap<{ dataSources: { hub: TextileDataSour
   Upload: GraphQLUpload,
   DateTime: DateTimeResolver,
   Bucket: {
+    async links(root, args, { dataSources }) {
+      try {
+        const buckets = await dataSources.hub.buckets
+        await buckets.withThread(root.thread)
+        const links = await buckets.links(root.key)
+        return { __typename: 'BucketLinks', ...links }
+      } catch (err) {
+        new ApolloError(err)
+      }
+      return null
+    },
     createdAt(root) {
       return root.createdAt ? formatDate(root.createdAt) : null
     },
@@ -27,25 +37,27 @@ export const resolvers: GraphQLResolverMap<{ dataSources: { hub: TextileDataSour
     }
   },
   Query: {
-    async folder(root, { path }, { dataSources }) {
+    async bucketDirectory(root, { input: { path } }, { dataSources }) {
       // dataSources.hub.buckets.listPath(path)
     },
-    async file(root, { name }, { dataSources }) {
+    async bucketFile(root, { input: { path } }, { dataSources }) {
       dataSources.hub.buckets
     },
-    async buckets(root, args, { dataSources }) {
+    async bucket(root, args, { dataSources }) {},
+    async listBuckets(root, args, { dataSources }) {
       return dataSources.hub.listBuckets()
     }
   },
   Mutation: {
-    async addFile(root, { file }, { dataSources }, info) {
+    async createBucket() {},
+    async addBucketFile(root, { input: { file } }, { dataSources }, info) {
       const bucketKey = ''
       const { filename, mimetype, createReadStream } = await file
       const stream = createReadStream()
       //   await dataSources.hub.buckets
       //     .pushPath(bucketKey, filename, stream)
       //     .catch((error) => new ApolloError(error))
-    }
-    // async addFiles(root, { files }, { dataSources }, info) {}
+    },
+    async addBucketFiles(root, { files }, { dataSources }, info) {}
   }
 }

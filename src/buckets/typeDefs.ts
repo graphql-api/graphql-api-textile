@@ -1,81 +1,106 @@
-import { gql } from 'apollo-server-core'
+import { gql } from 'graphql-tag'
 
 export const typeDefs = gql`
   scalar Upload
   scalar DateTime
 
-  interface BucketEntry {
-    path: String
-  }
-
-  type BucketEntryEdge {
-    node: BucketEntry
-  }
-
-  type BucketFolderConnection {
-    edges: [BucketEntryEdge]
-    children: [BucketEntryEdge]
-    parent: BucketFolder
-  }
-
   """
-  Folder
+  Directory
   """
-  type BucketFolder implements BucketEntry {
+  type BucketDirectory implements BucketPath {
+    cid: ID!
     path: String!
-    connection: BucketFolderConnection
-  }
-
-  type BucketFileConnection {
-    siblings: [BucketEntryEdge]
-    parent: BucketFolder
+    name: String!
+    isDir: Boolean
+    count: Int
+    size: Int
+    paths: BucketPathConnection
+    metadata: BuckMetadata
   }
 
   """
   File
   """
-  type BucketFile implements BucketEntry {
+  type BucketFile implements BucketPath {
+    cid: ID!
     path: String!
-    id: ID!
+    name: String!
     filename: String!
     mimetype: String
-    connection: BucketFileConnection
+    size: Int
+    isDir: Boolean
+    metadata: BuckMetadata
   }
 
-  type BucketLinks {
+  type BuckMetadata {
+    updatedAt: Int
+  }
+
+  interface BucketPath {
     cid: ID!
-    http: String
+    path: String!
+    name: String!
+    isDir: Boolean
+    metadata: BuckMetadata
   }
 
-  type BucketRootConnection {
-    edges: [BucketEntryEdge]
-    children: [BucketEntryEdge]
+  type BucketPathEdge {
+    node: BucketPath
+  }
+
+  type BucketPathConnection {
+    edges: [BucketPathEdge]
   }
 
   """
   Bucket
   """
   type Bucket {
-    cid: ID
     name: String
     createdAt: DateTime
     key: String
     path: String
     thread: String
     updatedAt: DateTime
-    connection: BucketRootConnection
+    links: BucketLinks
+    paths: BucketPathConnection
+  }
+
+  type BucketLinks {
+    www: String
+    ipns: String
+    url: String
   }
 
   type Query {
-    folder(path: String): BucketFolder
-    file(path: String): BucketFile
-    listFiles(path: String): [BucketFile]
-    buckets: [Bucket]
+    bucketDirectory(input: BucketPathInput!): BucketDirectory
+    bucketFile(input: BucketPathInput!): BucketFile
+    bucket(input: BucketInput): Bucket
+    listBuckets: [Bucket]
+  }
+
+  input BucketInput {
+    key: String
+    thread: String
+  }
+
+  input BucketPathInput {
+    path: String
+    key: String
+    thread: String
   }
 
   type Mutation {
-    createBucket(name: String): Bucket
-    addFile(file: Upload): BucketFile
-    addFiles(files: Upload): [BucketFile]
+    createBucket(input: CreateBucketInput!): Bucket
+    addBucketFile(input: AddBucketFileInput!): BucketFile
+    addBucketFiles(input: [AddBucketFileInput]!): [BucketFile]
+  }
+
+  input CreateBucketInput {
+    name: String
+  }
+
+  input AddBucketFileInput {
+    file: Upload
   }
 `
