@@ -38,8 +38,8 @@ export class TextileDataSource extends DataSource {
   async generateToken() {
     const users = await this.users
 
-    const key = PrivateKey.fromString()
-    users.getToken()
+    // const key = PrivateKey.fromString()
+    // users.getToken()
   }
 
   async getUsage() {
