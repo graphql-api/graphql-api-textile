@@ -92,7 +92,8 @@ export const typeDefs = gql`
 
   type Mutation {
     createBucket(input: CreateBucketInput!): Bucket
-    addBucketFile(input: AddBucketFileInput!): BucketFile
+    deleteBucket(input: DeleteBucketInput): Bucket
+    addBucketFile(input: AddBucketFileInput): BucketFile
     addBucketFiles(input: [AddBucketFileInput]!): [BucketFile]
   }
 
@@ -100,7 +101,11 @@ export const typeDefs = gql`
     name: String
   }
 
+  input DeleteBucketInput {
+    name: String
+  }
+
   input AddBucketFileInput {
-    file: Upload
+    file: Upload!
   }
 `

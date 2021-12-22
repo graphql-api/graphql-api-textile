@@ -12,6 +12,8 @@ const getBucketPathEdge = (item: PathItem) => ({
   node: { ...item, __typename: item.isDir ? 'BucketDirectory' : 'BucketFile' }
 })
 
+const display = (num) => console.log(`progress: ${num}`)
+
 export type Resolvers<C = any> = GraphQLResolverMap<{
   cache: InMemoryCache
   client: ApolloClient<C>
@@ -61,7 +63,7 @@ export const getLocalResolvers = (getBucketClient: () => Promise<Buckets>): Reso
       if (path) {
         try {
           const buckets = await getBucketClient()
-          const display = (num) => console.log(`progress: ${num}`)
+
           const data = await buckets.pullIpfsPath(path, { progress: display })
           if (data && path.endsWith('.json')) {
             const value = await collectUint8Arrays(data)
@@ -127,6 +129,34 @@ export const getLocalResolvers = (getBucketClient: () => Promise<Buckets>): Reso
     }
   },
   Mutation: {
-    async createBucket() {}
+    async addBucketFile(root, args, context) {
+      console.log(args)
+      // const { key, path, file } = args.input
+      // if (key && path && file) {
+      //   try {
+      //     const buckets = await getBucketClient()
+      //     const result = await buckets.pushPath(key, path, file, { progress: display })
+      //     return result.path
+      //   } catch (error) {
+      //     new ApolloError(error)
+      //   }
+      // }
+    },
+    async createBucket(root, args, context) {
+      const { name, encrypted = undefined, cid = undefined } = args.input
+      if (name && encrypted) {
+        try {
+          const buckets = await getBucketClient()
+          const response = await buckets.create(name, { encrypted, cid })
+          return {
+            ...response.root,
+            links: response.links
+          }
+        } catch (error) {
+          new ApolloError(error)
+        }
+      }
+      return null
+    }
   }
 })

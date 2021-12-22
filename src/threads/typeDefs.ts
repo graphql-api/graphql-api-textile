@@ -9,4 +9,14 @@ export const typeDefs = gql`
   extend type Query {
     listThreads: [Thread]
   }
+
+  extend type Mutation {
+    createThread: Thread
+  }
+
+  """
+  extend type Subscription {
+
+  }
+  """
 `

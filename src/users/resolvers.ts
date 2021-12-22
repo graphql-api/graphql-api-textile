@@ -11,5 +11,8 @@ export const resolvers: GraphQLResolverMap<{ dataSources: { hub: TextileDataSour
       console.log('LOGIN', userAuth)
       return userAuth
     }
+  },
+  Subscription: {
+    resolveChallenge() {}
   }
 }
