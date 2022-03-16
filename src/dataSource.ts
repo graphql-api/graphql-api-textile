@@ -1,5 +1,6 @@
 import { DataSource } from 'apollo-datasource'
 import { Buckets, Client, createUserAuth, PrivateKey, Users, UserMessage } from '@textile/hub'
+import type { GetThreadResponse } from '@textile/hub-threads-client'
 
 const USER_API_KEY = process.env.TEXTILE_USER_API_KEY
 const USER_API_SECRET = process.env.TEXTILE_USER_API_SECRET
@@ -25,9 +26,8 @@ export class TextileDataSource extends DataSource {
     // this.users = Users.withUserAuth(userAuth)
   }
 
-  /** */
-
-  async listThreads() {
+  /** @ts-ignore */
+  async listThreads(): GetThreadResponse[] {
     const users = await this.users
     const response = await users.listThreads()
     return response

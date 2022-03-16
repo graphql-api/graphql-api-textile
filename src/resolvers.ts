@@ -1,6 +1,3 @@
-import { IResolvers } from 'apollo-server-micro'
+import { GraphQLResolverMap } from 'apollo-graphql'
 
-
-export const resolvers:IResolvers = {
-  
-}
+export const resolvers: GraphQLResolverMap = {}

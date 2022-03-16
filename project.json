@@ -1,0 +1,32 @@
+{
+  "root": "libs/graphql/textile",
+  "sourceRoot": "libs/graphql/textile/src",
+  "projectType": "library",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "options": {
+        "lintFilePatterns": ["libs/graphql/textile/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/graphql/textile"],
+      "options": {
+        "jestConfig": "libs/graphql/textile/jest.config.js",
+        "passWithNoTests": true
+      }
+    },
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/graphql/textile",
+        "tsConfig": "libs/graphql/textile/tsconfig.lib.json",
+        "packageJson": "libs/graphql/textile/package.json",
+        "main": "libs/graphql/textile/src/index.ts",
+        "assets": ["libs/graphql/textile/*.md"]
+      }
+    }
+  }
+}
