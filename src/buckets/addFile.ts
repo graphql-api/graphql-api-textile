@@ -1,4 +1,3 @@
-import Cors from 'cors'
 import { Buckets, PrivateKey, Filecoin, Client, ThreadID } from '@textile/hub'
 import { createStream } from '../lib/createStream'
 import { isEmpty, getBucketDataFromHeader } from '../lib/utilities'

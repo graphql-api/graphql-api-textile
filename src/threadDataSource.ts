@@ -4,6 +4,6 @@ import { Collection } from '@textile/threaddb'
 
 export class ThreadDataSource<D = any> extends MongoDataSource<D> {}
 
-const c = await Client.withUserAuth()
+// const c = await Client.withUserAuth()
 
-const d = new MongoDataSource(({} as unknown) as Collection)
+// const d = new MongoDataSource(({} as unknown) as Collection)

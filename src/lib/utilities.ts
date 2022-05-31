@@ -86,9 +86,9 @@ export function classNames() {
         classes.push(arg.toString())
       } else {
         for (var key in arg) {
-          if (hasOwn.call(arg, key) && arg[key]) {
-            classes.push(key)
-          }
+          // if (hasOwn.call(arg, key) && arg[key]) {
+          //   classes.push(key)
+          // }
         }
       }
     }
